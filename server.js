@@ -14,12 +14,13 @@ app.get("/", (_, res) => {
 });
 
 io.on("connection", (socket) => {
-  console.log(socket.id, "has joined us");
   // 1st arg of emit is the event name, 2nd is the data we want to provide
-  socket.emit("welcome", [1, 2, 3]);
+  console.log(socket.id, "has joined us");
+  socket.emit("welcome", "Welcome to the chat!");
 
-  socket.on("thankYou", (data) => {
-    console.log("other data", data);
+  socket.on("toServer", (data) => {
+    console.log("toServer", data);
+    io.emit("welcome", data);
   });
 });
 server.listen(3000, () => {
