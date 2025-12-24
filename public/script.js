@@ -8,7 +8,13 @@ const socket = io("http://localhost:3000");
 // and an emit method
 
 socket.on("welcome", (data) => {
-  console.log("data", data);
+  const messages = document.querySelector("#messages");
+  // console.log(messages);
+
+  const li = document.createElement("li");
+  li.innerText = `${data.id}: ${data.message}`;
+
+  messages.appendChild(li);
   // once welcom is emitted from the server, we run this callback
   // socket.emit("thankYou", [4, 5, 6]);
 });
@@ -18,8 +24,8 @@ const inputBtn = document.querySelector(".btn-primary");
 const sendMessage = (e) => {
   e.preventDefault();
   const input = document.querySelector("#user-message");
-  console.log(input.value);
-  socket.emit("thankYou", input.value);
+  socket.emit("toServer", input.value);
+  input.value = "";
 };
 
 inputBtn.addEventListener("click", sendMessage);
