@@ -38,7 +38,20 @@ io.on("connection", (socket) => {
         formatMessage(botName, `${user.username} has joined the chat`)
       );
     //Brodcast when a user disconects
+
+    //Send users and room info
+    io.to(user.room).emit("roomUsers", {
+      room: user.room,
+      users: getRoomUsers(user.room),
+    });
   });
+  socket.on("chatMessage", (data) => {
+    const user = getCurrentUser(socket.id);
+    console.log(data);
+
+    io.to(user.room).emit("message", formatMessage(user.username, data));
+  });
+
   socket.on("disconnect", () => {
     const user = userLeave(socket.id);
 
@@ -47,14 +60,13 @@ io.on("connection", (socket) => {
         "message",
         formatMessage(botName, `${user.username} has left the chat`)
       );
+
+      //Send users and room info
+      io.to(user.room).emit("roomUsers", {
+        room: user.room,
+        users: getRoomUsers(user.room),
+      });
     }
-  });
-
-  socket.on("chatMessage", (data) => {
-    const user = getCurrentUser(socket.id);
-    console.log(data);
-
-    io.to(user.room).emit("message", formatMessage(user.username, data));
   });
 });
 
